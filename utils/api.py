@@ -18,7 +18,8 @@ logging.getLogger('httpx').setLevel(logging.WARNING)
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
 READ_API_KEY = os.environ.get("JINA_API_KEY", "")
 FACT_Model = "gemini-2.5-flash-preview-05-20"
-Model = "gemini-2.5-pro-preview-06-05"
+# Model = "gemini-2.5-pro-preview-06-05"
+Model = "gemini-2.5-flash"
 
 class AIClient:
     

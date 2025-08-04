@@ -61,12 +61,19 @@ def calculate_weighted_scores(llm_output_json, criteria_data, language="en"):
             logging.warning(f"ID: {task_id} - No criteria mapping found for dimension '{dim}'. Skipping dimension.")
             continue
 
+        suggestions = None
+
         for score_item in scores_list:
             if not isinstance(score_item, dict):
                 logging.warning(f"ID: {task_id} - Item in scores_list for dimension '{dim}' is not a dictionary. Skipping item: {score_item}")
                 continue
 
             criterion_text_raw = score_item.get("criterion")
+
+            if not criterion_text_raw:
+                suggestions = score_item
+                continue
+
             criterion_text = criterion_text_raw.strip() if isinstance(criterion_text_raw, str) else None
 
             # Check different score field formats
@@ -145,6 +152,9 @@ def calculate_weighted_scores(llm_output_json, criteria_data, language="en"):
 
         results["target"]["dims"][f"{dim}_weighted_avg"] = dim_target_avg
         results["reference"]["dims"][f"{dim}_weighted_avg"] = dim_reference_avg
+
+        results["target"]["dims"][f"{dim}_suggestions"] = suggestions.get("article_1_suggestions")
+        results["reference"]["dims"][f"{dim}_suggestions"] = suggestions.get("article_2_suggestions")
 
         dim_weight = dimension_weights.get(dim, 0)
         total_target_score += dim_target_avg * dim_weight
